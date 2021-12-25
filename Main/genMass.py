@@ -153,12 +153,9 @@ def processingForMainGo(list):
 
 
 if __name__ == "__main__":
-    # print(polyNonOdnorod())
-    # print("="*1200)
+
     test = MathModels(1, 2, 3, [1, 2, 3], 5, 1, 2, 1, 1, 1, 1, h=1)
 
     list_for_go = test.create_list_parametrs(polyNonOdnorod())
     print(processingForMainGo(list_for_go))
-    # print('ghb'+'b')
-
-    # print(Koef(polyNonOdnorod(), test.global_list[0]))
+   

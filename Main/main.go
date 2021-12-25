@@ -13,4 +13,8 @@ func main() {
 	ar := lib.ProcessingStrTolist2dComplex(cmd)
 	fmt.Println(ar)
 	fmt.Println(len(ar))
+	_, er := exec.Command("python3", "Main/Painter.py").Output()
+	if er == nil {
+		fmt.Println("Done")
+	}
 }

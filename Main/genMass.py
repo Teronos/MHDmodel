@@ -5,6 +5,7 @@ import numpy as np
 import sympy as sp
 
 from sympy.abc import alpha, sigma, k, l, A, b
+from lib.Funks import diskr
 
 
 def Koef(EqS, d):
@@ -69,17 +70,6 @@ def polyNonOdnorod():
     Eq = Eq.subs([(D, 1j * (b_0x * k + b_0y * l)), (Del, (-1) * (k * k + l * l)),
                   (Dt, -1j * sigma), (Btil, 1), (Htil, 1)])
     return sp.collect(sp.expand(Eq), sigma, evaluate=False)
-
-
-def diskr(mass, h=0.1):
-    """
-    Функция на вход получает массив из начала и конца отрезка спарамтером дискретизации.
-    На выходе получается массив значений от конда до начала с шагом h
-    """
-    s = np.array([])
-    for i in range(int((mass[-1] - mass[0]) / h) + 1):
-        s = np.append(s, mass[0] + h * i)
-    return s
 
 
 class MathModels:

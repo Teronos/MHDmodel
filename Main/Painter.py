@@ -1,11 +1,16 @@
 #from os import name
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
+import json
+
 #import lib.Funks as lf
 from lib.Funks import PlZAv
 
 if __name__ == "__main__":
-    m = (np.array([-9.99998298e-01+3.21913195e-07j,  1.00000146e+00-5.35488345e-07j,
+    var = sys.argv[1]
+    if var == "77":
+        m = (np.array([-9.99998298e-01+3.21913195e-07j,  1.00000146e+00-5.35488345e-07j,
        -9.99999799e-01+2.72646268e-06j,  0.00000000e+00-6.00000000e+00j,
         1.00000118e+00+2.33445918e-06j, -9.99997586e-01-1.98364280e-06j,
         1.37751411e-06-1.99999757e+00j,  1.00000164e+00+2.93057376e-06j,
@@ -24,4 +29,12 @@ if __name__ == "__main__":
        -1.92950556e+00-5.26315789e-01j, -9.99999712e-01-4.70545760e-06j,
         1.00000320e+00+2.59959583e-06j,  1.92950556e+00-5.26315789e-01j],
         ), np.array([2, 3, 3, 4, 4, 4, 4, 4, 4, 4]) )
-    PlZAv(m, [0.1, 2], 0.2)
+        #PlZAv(m, [0.1, 2], 0.2)
+
+        with open('./json_files/variable_parametr_model.txt','r') as json_file:
+            data = json.load(json_file)
+        print(data)
+        print(data['param'])
+
+    else:
+        print("write arg = 77") 

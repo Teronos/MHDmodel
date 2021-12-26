@@ -1,6 +1,8 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
+import json
+import os
 import numpy as np
 import sympy as sp
 
@@ -73,8 +75,7 @@ def polyNonOdnorod():
 
 
 class MathModels:
-
-    def __init__(self, k, l, b_0x, b_0y, alpha, A, H_0, g, Rm, mu, rho, h=0.1):
+    def __init__(self, k, l, b_0x, b_0y, alpha, A, H_0, g,b, Rm, mu, rho, h=0.1):
         self.k = k
         self.l = l
         self.b_0x = b_0x
@@ -100,6 +101,12 @@ class MathModels:
                 value = value_temp
         if flac == 1:
             self.__dict__[param] = diskr(value, self.h)
+
+            if not os.path.isdir("json_files"):
+              os.mkdir("json_files")
+
+            with open('./json_files/variable_parametr_model.txt', 'w') as outfile:
+              json.dump({'param':param, 'variable':value, 'h':self.h}, outfile, indent=4)
         else:
             if flac == 0:
                 print('Ошибка! Подайте значение "X" в виде "[X]"')
@@ -114,9 +121,10 @@ class MathModels:
 
         for value in self.__dict__[param]:
             temp_dict[param] = value
-            temp_dict.update(copy_dict)
-            global_list.append(temp_dict)
-            temp_dict = {}
+            if value != 'izm':
+              temp_dict.update(copy_dict)
+              global_list.append(temp_dict)
+              temp_dict = {}
 
         self.global_list = global_list
 
@@ -131,6 +139,8 @@ class MathModels:
             list_final.append(Koef(equation_form, dict))
 
         return list_final
+
+
 
 
 def processingForMainGo(list):
@@ -154,8 +164,9 @@ def processingForMainGo(list):
 
 if __name__ == "__main__":
 
-    test = MathModels(1, 2, 3, [1, 2, 3], 5, 1, 2, 1, 1, 1, 1, h=1)
+    test = MathModels(1, 2, 3, [1,3], 5, 1, 1, 2, 1, 1, 1, 1, h=1)
 
     list_for_go = test.create_list_parametrs(polyNonOdnorod())
     print(processingForMainGo(list_for_go))
+    
    

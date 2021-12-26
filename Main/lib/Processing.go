@@ -23,7 +23,7 @@ func ProcessingStrTolist2dComplex(text []byte) [][]complex128 {
 			case err == nil:
 				*listComplex = append(*listComplex, temple)
 			case reflect.DeepEqual(err, errorr):
-				fmt.Println("Чтение завершено из скрипта завершено")
+				fmt.Println("Чтение из скрипта завершено")
 			default:
 				fmt.Println("Произошла ошибка при чтении ->", err)
 			}

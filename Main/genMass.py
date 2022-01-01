@@ -7,7 +7,7 @@ import numpy as np
 import sympy as sp
 
 from sympy.abc import alpha, sigma, k, l, A, b
-from lib.Funks import diskr
+from lib.FunksForGraphic import diskr
 
 
 def Koef(EqS, d):
@@ -164,7 +164,7 @@ def processingForMainGo(list):
 
 if __name__ == "__main__":
 
-    test = MathModels(1, 2, 3, [1,3], 5, 1, 1, 2, 1, 1, 1, 1, h=1)
+    test = MathModels(1, 2, 3, [1,5], 5, 1, 1, 2, 1, 1, 1, 1, h=1)
 
     list_for_go = test.create_list_parametrs(polyNonOdnorod())
     print(processingForMainGo(list_for_go))

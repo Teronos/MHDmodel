@@ -8,65 +8,33 @@ import json
 
 from lib.FunksForGraphic import PlZAv
 
-str_1 = """(np.array([-9.99998298e-01+3.21913195e-07j,  1.00000146e+00-5.35488345e-07j,
-       -9.99999799e-01+2.72646268e-06j,  0.00000000e+00-6.00000000e+00j,
-        1.00000118e+00+2.33445918e-06j, -9.99997586e-01-1.98364280e-06j,
-        1.37751411e-06-1.99999757e+00j,  1.00000164e+00+2.93057376e-06j,
-       -1.39970842e+00-1.42857143e+00j, -9.99999985e-01+5.07481410e-06j,
-        1.00000165e+00+3.00744202e-06j,  1.39970842e+00-1.42857143e+00j,
-       -1.66295884e+00-1.11111111e+00j, -9.99999875e-01+3.64034973e-06j,
-        1.00000350e+00-9.61419980e-07j,  1.66295884e+00-1.11111111e+00j,
-       -1.78144709e+00-9.09090909e-01j, -9.99997068e-01-4.40427178e-06j,
-        1.00000252e+00+2.77328130e-06j,  1.78144709e+00-9.09090909e-01j,
-       -1.84615385e+00-7.69230769e-01j, -9.99997527e-01-4.08791337e-06j,
-        1.00000267e+00+2.74794717e-06j,  1.84615385e+00-7.69230769e-01j,
-       -1.88561808e+00-6.66666667e-01j, -9.99997625e-01+3.06049561e-06j,
-        1.00000384e+00-3.81400858e-07j,  1.88561808e+00-6.66666667e-01j,
-       -1.91153845e+00-5.88235294e-01j, -9.99996380e-01-6.79737391e-06j,
-        1.00000263e+00+2.97984269e-06j,  1.91153845e+00-5.88235294e-01j,
-       -1.92950556e+00-5.26315789e-01j, -9.99999712e-01-4.70545760e-06j,
-        1.00000320e+00+2.59959583e-06j,  1.92950556e+00-5.26315789e-01j],
-        ), np.array([2, 3, 3, 4, 4, 4, 4, 4, 4, 4]) ) """
+def loadingInfoPolyForPaint():
+    listComplex = np.array([])
+    listComplexAmountRoots = np.array([])
 
-if __name__ == "__main__":
-    """
-    var = sys.argv[1]
-    if var == "77":
-        m = (np.array([-9.99998298e-01+3.21913195e-07j,  1.00000146e+00-5.35488345e-07j,
-       -9.99999799e-01+2.72646268e-06j,  0.00000000e+00-6.00000000e+00j,
-        1.00000118e+00+2.33445918e-06j, -9.99997586e-01-1.98364280e-06j,
-        1.37751411e-06-1.99999757e+00j,  1.00000164e+00+2.93057376e-06j,
-       -1.39970842e+00-1.42857143e+00j, -9.99999985e-01+5.07481410e-06j,
-        1.00000165e+00+3.00744202e-06j,  1.39970842e+00-1.42857143e+00j,
-       -1.66295884e+00-1.11111111e+00j, -9.99999875e-01+3.64034973e-06j,
-        1.00000350e+00-9.61419980e-07j,  1.66295884e+00-1.11111111e+00j,
-       -1.78144709e+00-9.09090909e-01j, -9.99997068e-01-4.40427178e-06j,
-        1.00000252e+00+2.77328130e-06j,  1.78144709e+00-9.09090909e-01j,
-       -1.84615385e+00-7.69230769e-01j, -9.99997527e-01-4.08791337e-06j,
-        1.00000267e+00+2.74794717e-06j,  1.84615385e+00-7.69230769e-01j,
-       -1.88561808e+00-6.66666667e-01j, -9.99997625e-01+3.06049561e-06j,
-        1.00000384e+00-3.81400858e-07j,  1.88561808e+00-6.66666667e-01j,
-       -1.91153845e+00-5.88235294e-01j, -9.99996380e-01-6.79737391e-06j,
-        1.00000263e+00+2.97984269e-06j,  1.91153845e+00-5.88235294e-01j,
-       -1.92950556e+00-5.26315789e-01j, -9.99999712e-01-4.70545760e-06j,
-        1.00000320e+00+2.59959583e-06j,  1.92950556e+00-5.26315789e-01j],
-        ), np.array([2, 3, 3, 4, 4, 4, 4, 4, 4, 4]) )
-        #PlZAv(m, [0.1, 2], 0.2)
 
-        
-
-    else:
-        print("run to graphic")
-        print(var)
-        
-        #data = json.load(var)
-        #print( data)
-    """
-    with open('./json_files/variable_parametr_model.txt','r') as json_file:
-            dataParametrs = json.load(json_file)
     with open('./json_files/list_info_polynom.txt','r') as json_file:
             list_info_poly = json.load(json_file)    
-    print(dataParametrs)
-    print(dataParametrs['param'])
-    print(list_info_poly[0],len(list_info_poly))    
+    
+    for element in list_info_poly:
+    
+        for num in element['MultiplicityRoots']:
+            listComplex = np.append(listComplex, np.clongdouble(num.replace('i','j')))
+        listComplexAmountRoots = np.append(listComplexAmountRoots, len(element['MultiplicityRoots']))
+    
+    return (listComplex, listComplexAmountRoots)
+
+if __name__ == "__main__":
+    with open('./json_files/variable_parametr_model.txt','r') as json_file:
+        dataParametrs = json.load(json_file)
+
+    PlZAv(loadingInfoPolyForPaint(), dataParametrs['variable'], dataParametrs['h'])
+
+    
+   
+    
+   
+    
+    
+
         

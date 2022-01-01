@@ -29,6 +29,7 @@ str_1 = """(np.array([-9.99998298e-01+3.21913195e-07j,  1.00000146e+00-5.3548834
         ), np.array([2, 3, 3, 4, 4, 4, 4, 4, 4, 4]) ) """
 
 if __name__ == "__main__":
+    """
     var = sys.argv[1]
     if var == "77":
         m = (np.array([-9.99998298e-01+3.21913195e-07j,  1.00000146e+00-5.35488345e-07j,
@@ -52,11 +53,20 @@ if __name__ == "__main__":
         ), np.array([2, 3, 3, 4, 4, 4, 4, 4, 4, 4]) )
         #PlZAv(m, [0.1, 2], 0.2)
 
-        with open('./json_files/variable_parametr_model.txt','r') as json_file:
-            data = json.load(json_file)
-        print(data)
-        print(data['param'])
+        
 
     else:
         print("run to graphic")
-        print(var) 
+        print(var)
+        
+        #data = json.load(var)
+        #print( data)
+    """
+    with open('./json_files/variable_parametr_model.txt','r') as json_file:
+            dataParametrs = json.load(json_file)
+    with open('./json_files/list_info_polynom.txt','r') as json_file:
+            list_info_poly = json.load(json_file)    
+    print(dataParametrs)
+    print(dataParametrs['param'])
+    print(list_info_poly[0],len(list_info_poly))    
+        

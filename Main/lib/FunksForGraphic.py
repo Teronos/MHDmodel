@@ -11,7 +11,6 @@ def diskr(mass, h=0.1):
         s = np.append(s, mass[0] + h * i)
     return s
 
-
 def Razdel(mass):
     ar = np.array([])
     s = 0

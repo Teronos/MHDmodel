@@ -2,7 +2,6 @@ package lib
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"math/cmplx"
 	"math/rand"
@@ -302,10 +301,11 @@ func MultiplicityOfRoots(ar, roots []complex128) (map[string]int, string) {
 
 	}
 	flag := new(string)
-	if *amountRoots == len(ar)-1 {
-		*flag = strconv.FormatBool(true)
+	mustAmountRoots := len(ar) - 1
+	if *amountRoots == mustAmountRoots {
+		*flag = strconv.FormatBool(true) + "-roots: " + strconv.Itoa(mustAmountRoots) + "|" + strconv.Itoa(mustAmountRoots)
 	} else {
-		*flag = strconv.FormatBool(false) + ": " + strconv.Itoa(*amountRoots) + "|" + strconv.Itoa(len(ar)-1)
+		*flag = strconv.FormatBool(false) + "-roots: " + strconv.Itoa(*amountRoots) + "|" + strconv.Itoa(mustAmountRoots)
 
 	}
 	return m, *flag
@@ -326,7 +326,7 @@ func FinalProcessing(listComplex, ar []complex128) []complex128 {
 	return unique(*list)
 }
 
-func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float64, amounrSpoint, amountParticle, iter int) {
+func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float64, amounrSpoint, amountParticle, iter int) []byte {
 	listInfoPoly := new([]InfoAboutPolynom)
 	for _, ar := range listComplexParametrs {
 		roots := modelAlpha(ar, psi, r, amounrSpoint, amountParticle, iter)
@@ -341,7 +341,8 @@ func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float
 	//}
 	//fmt.Println("done")
 
-	fmt.Println(string(data))
+	//fmt.Println(string(data))
+	return data
 }
 
 func convListComplexToString(listComplex []complex128) string {

@@ -1,9 +1,12 @@
+#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
+
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import json
 
-from lib.Funks import PlZAv
+from lib.FunksForGraphic import PlZAv
 
 str_1 = """(np.array([-9.99998298e-01+3.21913195e-07j,  1.00000146e+00-5.35488345e-07j,
        -9.99999799e-01+2.72646268e-06j,  0.00000000e+00-6.00000000e+00j,
@@ -55,4 +58,5 @@ if __name__ == "__main__":
         print(data['param'])
 
     else:
-        print("write arg = 77") 
+        print("run to graphic")
+        print(var) 

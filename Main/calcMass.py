@@ -1,14 +1,12 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
-import json
-import os
 import numpy as np
 import sympy as sp
+import json as js
+import argparse
 
 from sympy.abc import alpha, sigma, k, l, A, b
-from lib.FunksForGraphic import diskr
-
 
 def Koef(EqS, d):
     """
@@ -21,8 +19,7 @@ def Koef(EqS, d):
         s = np.append(s, rt.evalf(subs=d))
     return np.clongdouble(s)
 
-
-def polyOdnorod():
+def homogeneous():
     """
         Описывает случай для произвольной глубины. У полинома 4 ветви корней с учетом кратности
     """
@@ -45,8 +42,7 @@ def polyOdnorod():
                   (Dt, -1j * sigma)])
     return sp.collect(sp.expand(Eq), sigma, evaluate=False)
 
-
-def polyNonOdnorod():
+def inhomogeneous():
     """
         Функция упращает уравнение и возращает полином от сигма в виде словаря,
         где при кажлом сигма_i имеется функциональная зависимость. Она описывает
@@ -73,79 +69,69 @@ def polyNonOdnorod():
                   (Dt, -1j * sigma), (Btil, 1), (Htil, 1)])
     return sp.collect(sp.expand(Eq), sigma, evaluate=False)
 
+def BegData(kl, b0xy, al_, A_, H_, g_, mu_, ro_, b_, Rm_, func):
+    b_0x, b_0y, g, H_0, lnH_0, Rm, mu, ro = sp.symbols(
+        'b_0x b_0y g H_0 lnH_0 Rm mu rho')
+    h = H_
+    logh = np.log(h)
 
-class MathModels:
-    def __init__(self, k, l, b_0x, b_0y, alpha, A, H_0, g,b, Rm, mu, rho, h=0.1):
-        self.k = k
-        self.l = l
-        self.b_0x = b_0x
-        self.b_0y = b_0y
-        self.alpha = alpha
-        self.A = A
-        self.H_0 = H_0
-        self.g = g
-        self.Rm = Rm
-        self.mu = mu
-        self.rho = rho
-        self.b = b
-        self.h = h
+    kl = np.array(kl)
+    k_ = kl[0]
+    l_ = kl[1]
 
-        flac = 0
-        param = ''
-        value = 0
-        for key in self.__dict__:
-            value_temp = self.__dict__[key]
-            if isinstance(value_temp, list):
-                flac += 1
-                param = key
-                value = value_temp
-        if flac == 1:
-            self.__dict__[param] = diskr(value, self.h)
+    b0xy = np.array(b0xy)
+    b0x = b0xy[0]
+    b0y = b0xy[1]
 
-            if not os.path.isdir("json_files"):
-              os.mkdir("json_files")
+    d = {k: k_, l: l_, alpha: al_, A: A_, H_0: h, g: g_, lnH_0: logh, Rm: Rm_,
+         mu: mu_, ro: ro_, b_0x: b0x, b_0y: b0y, b: b_}
+    jk = Koef(func, d)  # Постановка значения в скобки поли меняет тип исслудуемого уравнения
+    return jk
 
-            with open('./json_files/variable_parametr_model.txt', 'w') as outfile:
-              json.dump({'param':param, 'variable':value, 'h':self.h}, outfile, indent=4)
-        else:
-            if flac == 0:
-                print('Ошибка! Подайте значение "X" в виде "[X]"')
-            else:
-                print("Ошибка! Подайте только один параметр в качестве отрезка")
+def pars_json(str_input):
+  dict_out = js.loads(str_input)
+  for key in dict_out.keys():
+    value = dict_out[key]
+    if len(value) == 1:
+      dict_out[key] = value[0]
+  return dict_out
 
-        copy_dict = self.__dict__.copy()
-        copy_dict.pop(param)
+def diskr(mass, h=0.1):
+    """
+    Функция на вход получает массив из начала и конца отрезка спарамтером дискретизации.
+    На выходе получается массив значений от конда до начала с шагом h
+    """
+    s = np.array([])
+    for i in range(int((mass[-1] - mass[0]) / h) + 1):
+        s = np.append(s, mass[0] + h * i)
+    return s      
 
-        global_list = []
-        temp_dict = {}
+def global_list(dict_input):
+  for key in dict_input:
+    value_dict = dict_input[key]
+    if isinstance(value_dict, list):
+      param = key
+  copy_dict = dict_input.copy()
+  copy_dict.pop(param)
+  global_list = []
+  temp_dict = {}
+  for value in diskr(dict_input[param], dict_input['h']):
+    temp_dict[param] = value
+    temp_dict.update(copy_dict)
+    global_list.append(temp_dict)
+    temp_dict = {}
+  return global_list
 
-        for value in self.__dict__[param]:
-            temp_dict[param] = value
-            if value != 'izm':
-              temp_dict.update(copy_dict)
-              global_list.append(temp_dict)
-              temp_dict = {}
+def create_list_parametrs(list_dict, equation_form):
+  list_final = []
 
-        self.global_list = global_list
+  for dictt in list_dict:
+    list_final.append(Koef(equation_form, dictt))
 
-    def __str__(self):
-        return str(self.__dict__)
-
-    def create_list_parametrs(self, equation_form):
-        list_final = []
-        gloal_list = self.global_list
-
-        for dict in gloal_list:
-            list_final.append(Koef(equation_form, dict))
-
-        return list_final
-
-
-
+  return list_final 
 
 def processingForMainGo(list):
     # Функция на вход получает numpy.array и преобразовывает его в строку.
-
     str1 = str(list)
     str1 = str1.replace('dtype=complex128)]', '').replace('[', '').replace('j', 'i').replace('  ',
                                                                                              '').replace('\n',
@@ -158,15 +144,22 @@ def processingForMainGo(list):
     for i in str_pre:
         if i != '':
             strFinal += i
-            strFinal += ';'
-    return strFinal+'end'
+            strFinal += '\n'
+    return strFinal + "!"
 
+def runParser():
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-im','--inhomogeneous' )
+  parser.add_argument('-hm','--homogeneous' )
+  return parser
 
 if __name__ == "__main__":
-
-    test = MathModels(1, 2, 3, [1,5], 5, 1, 1, 2, 1, 1, 1, 1, h=1)
-
-    list_for_go = test.create_list_parametrs(polyNonOdnorod())
+  parser = runParser()
+  namespace = parser.parse_args()
+  if namespace.inhomogeneous :
+    list_for_go = create_list_parametrs(global_list(pars_json(namespace.inhomogeneous)), inhomogeneous())
     print(processingForMainGo(list_for_go))
-    
-   
+
+  if namespace.homogeneous :
+    list_for_go = create_list_parametrs(global_list(pars_json(namespace.homogeneous)), homogeneous())
+    print(processingForMainGo(list_for_go))

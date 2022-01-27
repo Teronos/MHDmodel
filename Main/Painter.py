@@ -1,13 +1,13 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
-import matplotlib.pyplot as plt
-import numpy as np
-import sys
-import json
+#import matplotlib.pyplot as plt
+#import numpy as np
+#import json
+import argparse
 
-from lib.FunksForGraphic import PlZAv
-
+#from lib.FunksForGraphic import PlZAv
+""" 
 def loadingInfoPolyForPaint():
     listComplex = np.array([])
     listComplexAmountRoots = np.array([])
@@ -23,12 +23,24 @@ def loadingInfoPolyForPaint():
         listComplexAmountRoots = np.append(listComplexAmountRoots, len(element['MultiplicityRoots']))
     
     return (listComplex, listComplexAmountRoots)
+"""
+def runParser():
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-j','--json-string' )
+  #parser.add_argument('-H','--parametr_diskr' )
+  return parser
 
 if __name__ == "__main__":
-    with open('./json_files/variable_parametr_model.txt','r') as json_file:
-        dataParametrs = json.load(json_file)
+    #with open('./json_files/variable_parametr_model.txt','r') as json_file:
+    #    dataParametrs = json.load(json_file)
+   
 
-    PlZAv(loadingInfoPolyForPaint(), dataParametrs['variable'], dataParametrs['h'])
+
+    parser = runParser()
+    namespace = parser.parse_args()
+    print(namespace)
+    #print("4") 
+    #PlZAv(loadingInfoPolyForPaint(), dataParametrs['variable'], dataParametrs['h'])
 
     
    

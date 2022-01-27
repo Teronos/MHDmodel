@@ -2,7 +2,7 @@ package lib
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	//"io/ioutil"
 	"math"
 	"math/cmplx"
 	"math/rand"
@@ -327,7 +327,7 @@ func FinalProcessing(listComplex, ar []complex128) []complex128 {
 	return unique(*list)
 }
 
-func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float64, amounrSpoint, amountParticle, iter int) {
+func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float64, amounrSpoint, amountParticle, iter int) []byte {
 	listInfoPoly := new([]InfoAboutPolynom)
 	for _, ar := range listComplexParametrs {
 		roots := modelAlpha(ar, psi, r, amounrSpoint, amountParticle, iter)
@@ -338,8 +338,9 @@ func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float
 	}
 
 	data, _ := json.MarshalIndent(listInfoPoly, "", "  ")
-	if err := ioutil.WriteFile("./json_files/list_info_polynom.txt", data, 0600); err != nil {
-	}
+	//if err := ioutil.WriteFile("./json_files/list_info_polynom.txt", data, 0600); err != nil {
+	//}
+	return data
 
 }
 

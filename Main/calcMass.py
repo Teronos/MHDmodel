@@ -144,8 +144,8 @@ def processingForMainGo(list):
     for i in str_pre:
         if i != '':
             strFinal += i
-            strFinal += '\n'
-    return strFinal + "!"
+            strFinal += ";"
+    return strFinal + "end"
 
 def runParser():
   parser = argparse.ArgumentParser()

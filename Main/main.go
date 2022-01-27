@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os/exec"
-
+	"FirstPrototip/Main/lib"
 	"encoding/json"
 	"fmt"
 	"log"
+	"os/exec"
 	"strconv"
 	"strings"
 	"time"
@@ -31,11 +31,12 @@ func eventToPushButtonStart(progress *widget.ProgressBar) {
 
 }
 
-func readParam(box Box) (map[string][]float64, bool) {
+func readParam(box Box) (map[string][]float64, bool, *[]float64) {
 	flag := false
 	endParam := new(float64)
 	amountList := new(uint8)
 	dict := make(map[string][]float64)
+	variable := new([]float64)
 	for ind, entryLocal := range box.fieldEntry {
 		floatNum, er := strconv.ParseFloat(entryLocal.Text, 64)
 		if er != nil {
@@ -50,7 +51,9 @@ func readParam(box Box) (map[string][]float64, bool) {
 				if er_1 == nil && er_2 == nil && stParam <= enParam {
 					*amountList++
 					endParam = &enParam
-					dict[box.fieldLabel[ind].Text] = []float64{stParam, enParam}
+					*variable = []float64{stParam, enParam}
+					dict[box.fieldLabel[ind].Text] = *variable
+
 				} else {
 					break
 				}
@@ -67,7 +70,7 @@ func readParam(box Box) (map[string][]float64, bool) {
 
 	}
 
-	return dict, flag
+	return dict, flag, variable
 }
 
 func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.App, box Box, name string) *widget.Button {
@@ -86,20 +89,41 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 
 		button := widget.NewButton("start", func() {
 
-			dict, flag := readParam(box)
+			dict, flag, variable := readParam(box)
+
 			if flag {
 				label.SetText("correct")
+				pack := make(map[string][]float64)
+				pack["-v"] = *variable
+				pack["-H"] = dict["h"]
 				eventToPushButtonStart(progress)
 				jsonDict, err := json.Marshal(dict) //Indent(dict, "", "\t")
 				if err != nil {
 					log.Fatal(err)
 				}
+				packJsonDict, errr := json.Marshal(pack) //Indent(dict, "", "\t")
+				if err != nil {
+					log.Fatal(errr)
+				}
 
-				//fmt.Println(string(jsonDict))
+				fmt.Println(string(packJsonDict))
 
-				cmd, _ := exec.Command("python3", "Main/calcMass.py", "-hm", string(jsonDict)).Output()
+				cmd, _ := exec.Command("python3", "Main/calcMass.py", "-im", string(jsonDict)).Output()
 				fmt.Println("done")
 				fmt.Println(string(cmd))
+
+				listComplexParametrs := lib.ProcessingStrTolist2dComplex(cmd)
+				fmt.Println(listComplexParametrs)
+				data := lib.GlobaloAlphaModel(listComplexParametrs, 1e-10, 10, 100, 8, 20)
+				fmt.Println(string(data))
+
+				/*
+					cmd2, er := exec.Command("python3", "Main/Painter.py", "-j", string(packJsonDict)).Output()
+					if er == nil {
+						fmt.Println(string(cmd2))
+					} else {
+						fmt.Println(er)
+					}*/
 
 			} else {
 				label.SetText("write to only corect types!")
@@ -159,7 +183,7 @@ func main() {
 
 	label1_1 := widget.NewLabel("alpha")
 	entry1_1 := widget.NewEntry()
-	entry1_1.SetText("[1,4]")
+	entry1_1.SetText("[1,2]")
 
 	label1_2 := widget.NewLabel("A")
 	entry1_2 := widget.NewEntry()
@@ -207,7 +231,7 @@ func main() {
 
 	label1_13 := widget.NewLabel("h")
 	entry1_13 := widget.NewEntry()
-	entry1_13.SetText("0.1")
+	entry1_13.SetText("0.5")
 
 	container1_l := container.NewVBox(label1_1, label1_2, label1_3, label1_4,
 		label1_5, label1_11, label1_13)

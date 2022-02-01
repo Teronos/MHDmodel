@@ -35,7 +35,6 @@ if __name__ == "__main__":
     #    dataParametrs = json.load(json_file)
    
 
-
     parser = runParser()
     namespace = parser.parse_args()
     print(namespace)

@@ -243,7 +243,14 @@ func main() {
 	container2_e := container.NewVBox(entry1_6, entry1_7, entry1_8, entry1_9,
 		entry1_10, entry1_12)
 
-	grid1 := container.New(layout.NewGridLayout(4), container1_l, container1_e, container2_l, container2_e)
+	label3_5 := widget.NewLabel("eto")
+	entry3_5 := widget.NewEntry()
+	entry3_5.SetText("1")
+
+	container3_l := container.NewVBox(label3_5)
+	container3_e := container.NewVBox(entry3_5)
+
+	grid1 := container.New(layout.NewGridLayout(8), container1_l, container1_e, container2_l, container2_e, container3_l, container3_e)
 	Tbox1 := Box{grid1, []*widget.Entry{entry1_1, entry1_2, entry1_3,
 		entry1_4, entry1_5, entry1_6, entry1_7, entry1_8, entry1_9, entry1_10, entry1_11, entry1_12, entry1_13},
 

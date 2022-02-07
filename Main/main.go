@@ -37,6 +37,7 @@ func readParam(box Box) (map[string][]float64, bool, *[]float64) {
 	amountList := new(uint8)
 	dict := make(map[string][]float64)
 	variable := new([]float64)
+
 	for ind, entryLocal := range box.fieldEntry {
 		floatNum, er := strconv.ParseFloat(entryLocal.Text, 64)
 		if er != nil {
@@ -89,7 +90,10 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 
 		button := widget.NewButton("start", func() {
 
+			//fmt.Println(box.fieldLabel)
+
 			dict, flag, variable := readParam(box)
+			//fmt.Println(dict)
 
 			if flag {
 				label.SetText("correct")
@@ -114,7 +118,7 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 
 				listComplexParametrs := lib.ProcessingStrTolist2dComplex(cmd)
 				fmt.Println(listComplexParametrs)
-				data := lib.GlobaloAlphaModel(listComplexParametrs, 1e-10, 10, 100, 8, 20)
+				data := lib.GlobaloAlphaModel(listComplexParametrs, dict["psi"][0], 10, 100, 8, int(dict["iter"][0]))
 				fmt.Println(string(data))
 
 				/*
@@ -229,33 +233,68 @@ func main() {
 	entry1_12 := widget.NewEntry()
 	entry1_12.SetText("1")
 
-	label1_13 := widget.NewLabel("h")
-	entry1_13 := widget.NewEntry()
-	entry1_13.SetText("0.5")
+	label3_1 := widget.NewLabel("psi")
+	entry3_1 := widget.NewEntry()
+	entry3_1.SetText("1e-8")
+
+	label3_2 := widget.NewLabel("r")
+	entry3_2 := widget.NewEntry()
+	entry3_2.SetText("5")
+
+	label3_3 := widget.NewLabel("h")
+	entry3_3 := widget.NewEntry()
+	entry3_3.SetText("0.5")
+
+	label4_1 := widget.NewLabel("iter")
+	entry4_1 := widget.NewEntry()
+	entry4_1.SetText("20")
+
+	label4_2 := widget.NewLabel("particle")
+	entry4_2 := widget.NewEntry()
+	entry4_2.SetText("8")
+
+	label4_3 := widget.NewLabel("point")
+	entry4_3 := widget.NewEntry()
+	entry4_3.SetText("20")
+
+	label_entry := widget.NewLabel("")
 
 	container1_l := container.NewVBox(label1_1, label1_2, label1_3, label1_4,
-		label1_5, label1_11, label1_13)
+		label1_5, label1_11, label_entry,
+		label3_1, label3_2, label3_3,
+	)
 	container1_e := container.NewVBox(entry1_1, entry1_2, entry1_3, entry1_4,
-		entry1_5, entry1_11, entry1_13)
+		entry1_5, entry1_11, label_entry,
+		entry3_1, entry3_2, entry3_3,
+	)
 
 	container2_l := container.NewVBox(label1_6, label1_7, label1_8, label1_9,
-		label1_10, label1_12)
+		label1_10, label1_12, label_entry,
+		label4_1, label4_2, label4_3,
+	)
 	container2_e := container.NewVBox(entry1_6, entry1_7, entry1_8, entry1_9,
-		entry1_10, entry1_12)
+		entry1_10, entry1_12, label_entry,
+		entry4_1, entry4_2, entry4_3,
+	)
 
-	label3_5 := widget.NewLabel("eto")
-	entry3_5 := widget.NewEntry()
-	entry3_5.SetText("1")
+	//container3_l := container.NewVBox(label3_1, label3_2, label3_3)
+	//container3_e := container.NewVBox(entry3_1, entry3_2, entry3_3)
 
-	container3_l := container.NewVBox(label3_5)
-	container3_e := container.NewVBox(entry3_5)
+	//container4_l := container.NewVBox(label4_1, label4_2, label4_3)
+	//container4_e := container.NewVBox(entry4_1, entry4_2, entry4_3)
 
-	grid1 := container.New(layout.NewGridLayout(8), container1_l, container1_e, container2_l, container2_e, container3_l, container3_e)
+	grid1 := container.New(layout.NewGridLayout(4), container1_l, container1_e, container2_l, container2_e)
+	//	container3_l, container3_e, container4_l, container4_e)
+
 	Tbox1 := Box{grid1, []*widget.Entry{entry1_1, entry1_2, entry1_3,
-		entry1_4, entry1_5, entry1_6, entry1_7, entry1_8, entry1_9, entry1_10, entry1_11, entry1_12, entry1_13},
+		entry1_4, entry1_5, entry1_6, entry1_7, entry1_8, entry1_9, entry1_10, entry1_11, entry1_12,
+		entry3_1, entry3_2, entry3_3, entry4_1, entry4_2, entry4_3,
+	},
 
 		[]*widget.Label{label1_1, label1_2, label1_3,
-			label1_4, label1_5, label1_6, label1_7, label1_8, label1_9, label1_10, label1_11, label1_12, label1_13}}
+			label1_4, label1_5, label1_6, label1_7, label1_8, label1_9, label1_10, label1_11, label1_12,
+			label3_1, label3_2, label3_3, label4_1, label4_2, label4_3,
+		}}
 	firstmodelWindow := fyne.CurrentApp().NewWindow("First model")
 	buttonFirstModel := createObjectMenuFromButton(mainWindow, firstmodelWindow, application, Tbox1, "btn1")
 

@@ -138,7 +138,7 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 				}
 
 				//fmt.Println(string(packJsonDict))
-				label.SetText("calculate coefficents")
+				label.SetText("calculating coefficents")
 				cmd, _ := exec.Command("python3", "Main/calcMass.py", "-im", string(jsonDict)).Output()
 				//fmt.Println("done")
 				//fmt.Println(string(cmd))

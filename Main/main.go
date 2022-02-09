@@ -117,17 +117,21 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 				fmt.Println(string(cmd))
 
 				listComplexParametrs := lib.ProcessingStrTolist2dComplex(cmd)
-				fmt.Println(listComplexParametrs)
-				data := lib.GlobaloAlphaModel(listComplexParametrs, dict["psi"][0], 10, 100, 8, int(dict["iter"][0]))
-				fmt.Println(string(data))
+				//fmt.Println(listComplexParametrs)
 
-				/*
-					cmd2, er := exec.Command("python3", "Main/Painter.py", "-j", string(packJsonDict)).Output()
-					if er == nil {
-						fmt.Println(string(cmd2))
-					} else {
-						fmt.Println(er)
-					}*/
+				data := lib.GlobaloAlphaModel(listComplexParametrs, dict["psi"][0], dict["r"][0], int(dict["point"][0]),
+					int(dict["particle"][0]), int(dict["iter"][0]))
+
+				//fmt.Println(string(data))
+
+				cmd2, er := exec.Command("python3", "Main/Painter.py", "-j", string(data), "-p", string(packJsonDict)).Output()
+				if er == nil {
+					fmt.Println(string(cmd2))
+					fmt.Println("end program")
+				} else {
+					fmt.Println(er)
+					fmt.Print(" wrong on python script")
+				}
 
 			} else {
 				label.SetText("write to only corect types!")
@@ -191,7 +195,7 @@ func main() {
 
 	label1_2 := widget.NewLabel("A")
 	entry1_2 := widget.NewEntry()
-	entry1_2.SetText("2")
+	entry1_2.SetText("1")
 
 	label1_3 := widget.NewLabel("b_0x")
 	entry1_3 := widget.NewEntry()
@@ -255,7 +259,7 @@ func main() {
 
 	label4_3 := widget.NewLabel("point")
 	entry4_3 := widget.NewEntry()
-	entry4_3.SetText("20")
+	entry4_3.SetText("500")
 
 	label_entry := widget.NewLabel("")
 

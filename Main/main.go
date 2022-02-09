@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -23,11 +22,39 @@ type Box struct {
 	fieldLabel []*widget.Label
 }
 
-func eventToPushButtonStart(progress *widget.ProgressBar) {
-	for i := 0.0; i <= 1; i += 0.1 {
-		time.Sleep(time.Millisecond * 25)
+type InfoAboutPolynom struct {
+	PolynomialCoefficients string
+	MultiplicityRoots      map[string]int
+	AllRoots               string
+}
+
+func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float64, amounrSpoint,
+	amountParticle, iter int, progress *widget.ProgressBar) []byte {
+	listInfoPoly := new([]InfoAboutPolynom)
+	h := 1 / float64(len(listComplexParametrs))
+	i := 0.0
+	for _, ar := range listComplexParametrs {
+		roots := lib.ModelAlpha(ar, psi, r, amounrSpoint, amountParticle, iter)
+		multiplicityRoots, flac := lib.MultiplicityOfRoots(ar, roots)
+		elemet := InfoAboutPolynom{lib.ConvListComplexToString(ar), multiplicityRoots, flac}
+		*listInfoPoly = append(*listInfoPoly, elemet)
+		i += h
 		progress.SetValue(i)
+
 	}
+
+	data, _ := json.MarshalIndent(listInfoPoly, "", "  ")
+	//if err := ioutil.WriteFile("./json_files/list_info_polynom.txt", data, 0600); err != nil {
+	//}
+	return data
+
+}
+
+func eventToPushButtonStart(progress *widget.ProgressBar, dict map[string][]float64, listComplexParametrs [][]complex128) []byte {
+	data := GlobaloAlphaModel(listComplexParametrs, dict["psi"][0], dict["r"][0], int(dict["point"][0]),
+		int(dict["particle"][0]), int(dict["iter"][0]), progress)
+
+	return data
 
 }
 
@@ -100,7 +127,7 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 				pack := make(map[string][]float64)
 				pack["-v"] = *variable
 				pack["-H"] = dict["h"]
-				eventToPushButtonStart(progress)
+
 				jsonDict, err := json.Marshal(dict) //Indent(dict, "", "\t")
 				if err != nil {
 					log.Fatal(err)
@@ -110,27 +137,32 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 					log.Fatal(errr)
 				}
 
-				fmt.Println(string(packJsonDict))
-
+				//fmt.Println(string(packJsonDict))
+				label.SetText("calculate coefficents")
 				cmd, _ := exec.Command("python3", "Main/calcMass.py", "-im", string(jsonDict)).Output()
-				fmt.Println("done")
-				fmt.Println(string(cmd))
+				//fmt.Println("done")
+				//fmt.Println(string(cmd))
 
 				listComplexParametrs := lib.ProcessingStrTolist2dComplex(cmd)
 				//fmt.Println(listComplexParametrs)
 
-				data := lib.GlobaloAlphaModel(listComplexParametrs, dict["psi"][0], dict["r"][0], int(dict["point"][0]),
-					int(dict["particle"][0]), int(dict["iter"][0]))
+				data := eventToPushButtonStart(progress, dict, listComplexParametrs)
+
+				//data := lib.GlobaloAlphaModel(listComplexParametrs, dict["psi"][0], dict["r"][0], int(dict["point"][0]),
+				//	int(dict["particle"][0]), int(dict["iter"][0]))
 
 				//fmt.Println(string(data))
-
+				label.SetText("waiting create pictures")
 				cmd2, er := exec.Command("python3", "Main/Painter.py", "-j", string(data), "-p", string(packJsonDict)).Output()
 				if er == nil {
 					fmt.Println(string(cmd2))
 					fmt.Println("end program")
+					label.SetText("")
+					progress.SetValue(0)
 				} else {
 					fmt.Println(er)
 					fmt.Print(" wrong on python script")
+					label.SetText("render time error")
 				}
 
 			} else {
@@ -191,7 +223,7 @@ func main() {
 
 	label1_1 := widget.NewLabel("alpha")
 	entry1_1 := widget.NewEntry()
-	entry1_1.SetText("[1,2]")
+	entry1_1.SetText("[1,10]")
 
 	label1_2 := widget.NewLabel("A")
 	entry1_2 := widget.NewEntry()

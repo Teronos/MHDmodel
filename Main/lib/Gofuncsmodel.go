@@ -249,7 +249,7 @@ func processingBeforeSP(listComplex, ar []complex128) ([]complex128, []complex12
 	return *listComplexPerfect, *listComplexForSP
 }
 
-func modelAlpha(ar []complex128, psi, r float64, amountSpoint, amountParticle, iter int) []complex128 {
+func ModelAlpha(ar []complex128, psi, r float64, amountSpoint, amountParticle, iter int) []complex128 {
 	listComplexFinal := new([][]complex128)
 	firstRadix := MoteKarlo(ar, amountSpoint, iter, r, psi)
 	listComplexPerfect, listComplexForSP := processingBeforeSP(firstRadix, ar)
@@ -330,9 +330,9 @@ func FinalProcessing(listComplex, ar []complex128) []complex128 {
 func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float64, amounrSpoint, amountParticle, iter int) []byte {
 	listInfoPoly := new([]InfoAboutPolynom)
 	for _, ar := range listComplexParametrs {
-		roots := modelAlpha(ar, psi, r, amounrSpoint, amountParticle, iter)
+		roots := ModelAlpha(ar, psi, r, amounrSpoint, amountParticle, iter)
 		multiplicityRoots, flac := MultiplicityOfRoots(ar, roots)
-		elemet := InfoAboutPolynom{convListComplexToString(ar), multiplicityRoots, flac}
+		elemet := InfoAboutPolynom{ConvListComplexToString(ar), multiplicityRoots, flac}
 		*listInfoPoly = append(*listInfoPoly, elemet)
 
 	}
@@ -344,7 +344,7 @@ func GlobaloAlphaModel(listComplexParametrs [][]complex128, psi float64, r float
 
 }
 
-func convListComplexToString(listComplex []complex128) string {
+func ConvListComplexToString(listComplex []complex128) string {
 	finalStr := new(string)
 	for _, value := range listComplex {
 		convComplex := strconv.FormatComplex(value, 'e', -1, 128)

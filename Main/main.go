@@ -136,12 +136,11 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 				if err != nil {
 					log.Fatal(errr)
 				}
-
+				//fmt.Println(string(jsonDict))
 				//fmt.Println(string(packJsonDict))
 				label.SetText("calculating coefficents")
 				cmd, _ := exec.Command("python3", "Main/calcMass.py", "-im", string(jsonDict)).Output()
 				//fmt.Println("done")
-				//fmt.Println(string(cmd))
 
 				listComplexParametrs := lib.ProcessingStrTolist2dComplex(cmd)
 				//fmt.Println(listComplexParametrs)
@@ -153,6 +152,10 @@ func createObjectMenuFromButton(mainWindow, localWindow fyne.Window, app fyne.Ap
 
 				//fmt.Println(string(data))
 				label.SetText("waiting create pictures")
+
+				//fmt.Println(string(data))
+				//fmt.Println(string(packJsonDict))
+
 				cmd2, er := exec.Command("python3", "Main/Painter.py", "-j", string(data), "-p", string(packJsonDict)).Output()
 				if er == nil {
 					fmt.Println(string(cmd2))
@@ -223,7 +226,7 @@ func main() {
 
 	label1_1 := widget.NewLabel("alpha")
 	entry1_1 := widget.NewEntry()
-	entry1_1.SetText("[1,10]")
+	entry1_1.SetText("[1,2]")
 
 	label1_2 := widget.NewLabel("A")
 	entry1_2 := widget.NewEntry()
@@ -275,7 +278,7 @@ func main() {
 
 	label3_2 := widget.NewLabel("r")
 	entry3_2 := widget.NewEntry()
-	entry3_2.SetText("5")
+	entry3_2.SetText("10")
 
 	label3_3 := widget.NewLabel("h")
 	entry3_3 := widget.NewEntry()
@@ -287,11 +290,11 @@ func main() {
 
 	label4_2 := widget.NewLabel("particle")
 	entry4_2 := widget.NewEntry()
-	entry4_2.SetText("8")
+	entry4_2.SetText("4")
 
 	label4_3 := widget.NewLabel("point")
 	entry4_3 := widget.NewEntry()
-	entry4_3.SetText("500")
+	entry4_3.SetText("1000")
 
 	label_entry := widget.NewLabel("")
 
@@ -332,28 +335,21 @@ func main() {
 			label3_1, label3_2, label3_3, label4_1, label4_2, label4_3,
 		}}
 	firstmodelWindow := fyne.CurrentApp().NewWindow("First model")
-	buttonFirstModel := createObjectMenuFromButton(mainWindow, firstmodelWindow, application, Tbox1, "btn1")
+	buttonFirstModel := createObjectMenuFromButton(mainWindow, firstmodelWindow, application, Tbox1, "First model")
+
+	Tbox2 := Box{grid1, []*widget.Entry{entry1_1, entry1_2, entry1_3,
+		entry1_4, entry1_5, entry1_6, entry1_7, entry1_8, entry1_9, entry1_10, entry1_11, entry1_12,
+		entry3_1, entry3_2, entry3_3, entry4_1, entry4_2, entry4_3,
+	},
+
+		[]*widget.Label{label1_1, label1_2, label1_3,
+			label1_4, label1_5, label1_6, label1_7, label1_8, label1_9, label1_10, label1_11, label1_12,
+			label3_1, label3_2, label3_3, label4_1, label4_2, label4_3,
+		}}
+	secondModelWindow := fyne.CurrentApp().NewWindow("Second model")
+	buttonSecondModel := createObjectMenuFromButton(mainWindow, secondModelWindow, application, Tbox2, "Second model")
 
 	/*
-		label2_1 := widget.NewLabel("param1")
-		entry2_1 := widget.NewEntry()
-
-		label2_2 := widget.NewLabel("param2")
-		entry2_2 := widget.NewEntry()
-
-		label2_3 := widget.NewLabel("param3")
-		entry2_3 := widget.NewEntry()
-
-		label2_4 := widget.NewLabel("param4")
-		entry2_4 := widget.NewEntry()
-
-		container2_l := container.NewVBox(label2_1, label2_2, label2_3, label2_4)
-		container2_e := container.NewVBox(entry2_1, entry2_2, entry2_3, entry2_4)
-
-		grid2 := container.New(layout.NewGridLayout(2), container2_l, container2_e)
-		secondModelWindow := fyne.CurrentApp().NewWindow("Second model")
-		buttonSecondModel := createObjectMenuFromButton(mainWindow, secondModelWindow, application, grid2, "btn2")
-
 		label3_1 := widget.NewLabel("param1")
 		entry3_1 := widget.NewEntry()
 
@@ -390,7 +386,7 @@ func main() {
 
 	mainWindow.SetContent(container.NewVBox(
 		buttonFirstModel,
-		//buttonSecondModel,
+		buttonSecondModel,
 		//buttonThirdModel,
 	))
 

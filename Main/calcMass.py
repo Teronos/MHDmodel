@@ -126,7 +126,7 @@ def create_list_parametrs(list_dict, equation_form):
   list_final = []
 
   for dictt in list_dict:
-    list_final.append(Koef(equation_form, dictt))
+    list_final.append(Koef(EqS=equation_form,d=dictt))
 
   return list_final 
 

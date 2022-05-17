@@ -12,24 +12,24 @@ def runParser():
   parser.add_argument('-p','--parametrs-for-create-graphics' )
   return parser
 
-def loadingInfoPolyForPaint(list_info_poly):
-    listComplex = np.array([])
-    listComplexAmountRoots = np.array([])
-    for element in list_info_poly:
-    
-        for num in element['MultiplicityRoots']:
-            listComplex = np.append(listComplex, np.clongdouble(num.replace('i','j')))
-        listComplexAmountRoots = np.append(listComplexAmountRoots, len(element['MultiplicityRoots']))
-    
-    return (listComplex, listComplexAmountRoots)  
+def argegate_to_complex_list(list_info_poly):
+        listComplex = np.array([])
+        list_amount_root = np.array([])
+        for element in list_info_poly:
+         
+            list_amount_root = np.append(list_amount_root, len(element['MultiplicityRoots']))
+            for value in element['MultiplicityRoots']:
+                listComplex = np.append(listComplex, np.clongdouble(value.replace('i','j')))
+         
+        return (listComplex, list_amount_root) 
 
 if __name__ == "__main__":
     parser = runParser()
     namespace = parser.parse_args()
     list_info_poly = json.loads(namespace.__dict__['json_string'])
     dataParametrs = json.loads(namespace.__dict__['parametrs_for_create_graphics'])
-    
-    PlZAv(loadingInfoPolyForPaint(list_info_poly), dataParametrs['-v'], dataParametrs['-H'][0])
+    m = argegate_to_complex_list(list_info_poly=list_info_poly)    
+    PlZAv(m, dataParametrs['-v'], dataParametrs['-H'][0]) 
     
     
    
